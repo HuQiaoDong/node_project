@@ -4,6 +4,9 @@ const crypto = require('crypto');
 // 导入发邮件模块
 const nodemailer = require('nodemailer');
 
+//导入生成和解析token模块
+const jsonwebtoken = require('jsonwebtoken');
+
 let transporter = nodemailer.createTransport({
     //主机
     host: 'smtp.126.com', //邮箱域名
@@ -55,6 +58,59 @@ class Utils {
             text: `您的验证码为：${code}，5分钟内有效`
         }, callback)
 
+    }
+
+    //将cookie转换成普通对象
+    transformCookie(cookie) {
+        console.log('cookie ==> ', cookie);
+
+        let cookies = cookie.split('; ');
+        let cookiesObject = {};
+        cookies.forEach(v => {
+            let c = v.split('=');
+            cookiesObject[c[0]] = c[1];
+        });
+
+        return cookiesObject;
+    }
+
+    //签名字符串, 生成token
+    signString(o) {
+        /*
+        {
+          value: 被签名的字符串,
+          salt: 加盐,
+          expires: 过期时间
+        }
+        */
+
+        //过期时间写法
+        //60 ==> '60s'
+        //'100' ==> '100ms'
+        //'2 days' ==> '2天'
+        //'10h' ==> '10小时'
+        //'7d' ==> '7天'
+        return jsonwebtoken.sign({
+            //被签名的字符串，建议被签名字符是唯一
+            data: o.value
+        }, o.salt, {
+            expiresIn: o.expires
+        })
+    }
+
+    //解析签名字符串, 解析token
+    verifyString(o) {
+        /**
+         * {
+         *   value: token字符串,
+         *   salt: 加盐,
+         *   fn: 回调函数
+         * }
+         * 
+         * fn(err, decoded) {}
+         */
+
+        jsonwebtoken.verify(o.value, o.salt, o.fn);
     }
 }
 

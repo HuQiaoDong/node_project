@@ -18,6 +18,18 @@ const routes = [{
         component: r => require(['../views/Login.vue'], r)
     },
     {
+        path: '/manage',
+        name: 'Manage',
+
+        //懒加载组件
+        component: r => require(['../views/Manage.vue'], r),
+        children: [{
+            path: 'type',
+            name: 'Type',
+            component: r => require(['../views/Type.vue'], r)
+        }]
+    },
+    {
         path: "*",
         redirect: {
             name: "Register"

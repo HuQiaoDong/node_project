@@ -45,3 +45,10 @@ exports.saltOptions = {
     //密码加盐
     psswordSalt: '_psw'
 }
+
+//token的过期时间
+exports.tokenOptions = {
+    expires: '5d',
+    //token加盐
+    tokenSalt: '_tk'
+}

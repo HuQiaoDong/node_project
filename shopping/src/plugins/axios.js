@@ -2,10 +2,11 @@
 
 import Vue from "vue";
 import axios from "axios";
-
-// Full config:  https://github.com/axios/axios#request-config
-// axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies)
+    // Full config:  https://github.com/axios/axios#request-config
+    // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
+    // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
 //设置post请求头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -14,7 +15,7 @@ let config = {
     // 基础请求
     baseURL: 'http://127.0.0.1:9000',
     // timeout: 60 * 1000, // Timeout
-    // withCredentials: true, // Check cross-site Access-Control
+    withCredentials: true, // Check cross-site Access-Control
 };
 
 const _axios = axios.create(config);

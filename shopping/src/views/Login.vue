@@ -10,10 +10,9 @@
               class="form-control"
               id="inputEmail3"
               placeholder="输入邮箱"
-              
-              
+              v-model="userInfo.email"
             />
-            <!-- v-model="userInfo.email" -->
+
             <!-- :class="[verifyRes[0]?'correctTips':'errorTips']" -->
           </div>
         </div>
@@ -25,19 +24,21 @@
               class="form-control"
               id="inputPassword3"
               placeholder="输入密码"
-
+              v-model="userInfo.password"
             />
           </div>
-                        <!-- v-model="userInfo.password"
-              :class="[verifyRes[2]?'correctTips':'errorTips']" -->
+
+          <!-- :class="[verifyRes[2]?'correctTips':'errorTips']" -->
         </div>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
-            <button
-              type="submit"
-              class="btn btn-default submit"
-
-            >登录</button>
+            <button type="submit" class="btn btn-default submit" @click.prevent="login">登录</button>
+            <!-- @click.prevent="uploadForm(userInfo)" -->
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <router-link to="/shopping/src/views/Register.vue">没有账号？立即注册</router-link>
             <!-- @click.prevent="uploadForm(userInfo)" -->
           </div>
         </div>
@@ -47,19 +48,40 @@
 </template>
 
 <script>
-  //导入表单验证文件
+//导入表单验证文件
 import { vaildForm } from "../js/vaildForm.js";
 export default {
-    name:'login',
-    data(){
-        return{
-            userInfo:{
-                email:'',
-                password:''
-            }
-        }
+  name: "login",
+  data() {
+    return {
+      userInfo: {
+        email: "",
+        password: ""
+      }
+    };
+  },
+  methods: {
+    login() {
+      let that =this;
+      this.axios
+        .post("/login", {
+          email:that.userInfo.email,
+          password:that.userInfo.password
+        })
+        .then(result => {
+          console.log('result ==> ', result);
+          if (result.data.code == 1020) {
+            this.$cookies.set("_abc", result.data.token, "5d");
+            console.log('登录成功');
+            this.$router.push({name:'Type'});
+          }
+        })
+        .catch(err => {
+          console.log("err ==> ", err);
+        });
     }
-}
+  }
+};
 </script>
 
 <style lang="less" scoped>

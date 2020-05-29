@@ -161,7 +161,7 @@ export default {
         return;
       }
 
-      //验证通过
+      //发起注册请求
       this.axios
         .post("/register", {
           email: that.userInfo.email,
@@ -170,7 +170,20 @@ export default {
           verifyCode: that.userInfo.verifyCode
         })
         .then(function(response) {
-          console.log(response);
+          console.log(response.data);
+          let registerRes = response.data;
+          if(registerRes.code == 1002){
+            // this.msg = '该邮箱已被注册'
+            // this.verifyRes[0] = false;
+          }
+          else if(registerRes.code == 1000){
+            // this.msg = '注册成功'
+            setTimeout(()=>{
+              that.$router.push('/login');
+            },3000)
+          }
+          else if(registerRes.code == 1001){
+          }
         })
         .catch(function(error) {
           console.log(error);
