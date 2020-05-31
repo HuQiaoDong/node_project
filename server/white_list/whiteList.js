@@ -1,7 +1,7 @@
 module.exports = {
 
     // 请求域白名单
-    hostList: 'http://192.168.0.102:8080',
+    hostList: 'http://192.168.0.102:8081',
 
     //验证邮箱验证码的路径
     mailList: '/register',
@@ -14,6 +14,7 @@ module.exports = {
         '/typeStatus',
         '/type',
         '/typeRows',
-        '/searchRows'
+        '/searchRows',
+        '/userInfo'
     ]
 }

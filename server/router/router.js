@@ -26,6 +26,15 @@ module.exports = app => {
     //搜索商品类型
     app.get('/searchType', routerController.searchType);
 
+    //获取用户信息
+    app.get('/userInfo', routerController.getUserInfo);
+
+    //获取数据表的记录数
+    app.get('/typeRows', routerController.typeRows);
+
+    //搜索时获取数据表的记录数
+    app.get('/searchRows', routerController.searchRows);
+
     //修改商品类型
     app.post('/type', routerController.updateType);
 

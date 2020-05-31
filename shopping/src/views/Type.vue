@@ -18,7 +18,6 @@
     </div>
 
     <div class="add">
-      <!-- data-toggle="modal" data-target="#modal"  -->
       <button class="btn btn-warning" @click="showModal(1)">添加商品类型</button>
     </div>
 
@@ -60,6 +59,28 @@
         </tbody>
       </table>
     </div>
+
+    <!-- 分页 -->
+    <nav v-if="typeData.length > 0">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" :class="{disabled: currentPage == 1}" @click="togglePage()">
+          <a class="page-link" href="javascript:void(0);">上一页</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="javascript:void(0);">{{currentPage}}</a>
+        </li>
+        <li
+          class="page-item"
+          :class="{disabled: currentPage == totalPage}"
+          @click="togglePage(true)"
+        >
+          <a class="page-link" href="javascript:void(0);">下一页</a>
+        </li>
+        <li>
+          <a class="page-link" href="javascript:void(0);">共 {{totalPage}} 页</a>
+        </li>
+      </ul>
+    </nav>
     <!-- 添加商品类型 -->
     <div class="modal fade" id="modal" ref="modal">
       <div class="modal-dialog">
@@ -116,7 +137,19 @@ export default {
       title: "添加商品类型",
 
       //记录编辑的商品类型下标
-      index: -1
+      index: -1,
+
+      //当前页数
+      currentPage: 1,
+
+      //每页显示10条数据
+      pageCount: 10,
+
+      //总页数
+      totalPage: 1,
+
+      //搜索标记
+      isSearch: false
     };
   },
   methods: {
@@ -145,6 +178,12 @@ export default {
             console.log("result ==> ", result);
 
             if (result.data.code == 1040) {
+              //获取商品类型
+              this.getTypeData();
+
+              //获取数据表的数据数量
+              this.getTypeDataRows();
+
               $(this.$refs.modal).modal("hide");
             }
 
@@ -153,52 +192,59 @@ export default {
           .catch(err => {
             console.log("err ==> ", err);
           });
-      }
-
-      //验证商品类型是否更改
-      if (this.type == this.typeData[this.index].type) {
-        $(this.$refs.modal).modal("hide");
-        this.type = "";
-        console.log("没有更改商品类型");
-        return;
-      }
-
-      //编辑商品类型
-      this.axios({
-        method: "POST",
-        url: "/type",
-        data: {
-          typeId: this.typeId,
-          type: this.type
-        }
-      })
-        .then(result => {
-          // console.log('result ==> ', result);
-          if (result.data.code == 1048) {
-            $(this.$refs.modal).modal("hide");
-          }
-
-          // this.$showToast({
-          //   message: result.data.msg
-          // })
-
-          this.typeData[this.index].type = this.type;
-          this.typeData[this.index].updatedAt = tool.formatDate(
-            new Date(),
-            "yyyy-MM-dd hh:mm:ss"
-          );
+      } else {
+        //验证商品类型是否更改
+        if (this.type == this.typeData[this.index].type) {
+          $(this.$refs.modal).modal("hide");
           this.type = "";
+          console.log("没有更改商品类型");
+          return;
+        }
+
+        //编辑商品类型
+        this.axios({
+          method: "POST",
+          url: "/type",
+          data: {
+            typeId: this.typeId,
+            type: this.type
+          }
         })
-        .catch(err => {
-          console.log("err ==> ", err);
-        });
+          .then(result => {
+            // console.log('result ==> ', result);
+            if (result.data.code == 1048) {
+              $(this.$refs.modal).modal("hide");
+            }
+
+            // this.$showToast({
+            //   message: result.data.msg
+            // })
+
+            this.typeData[this.index].type = this.type;
+            this.typeData[this.index].updatedAt = tool.formatDate(
+              new Date(),
+              "yyyy-MM-dd hh:mm:ss"
+            );
+            this.type = "";
+          })
+          .catch(err => {
+            console.log("err ==> ", err);
+          });
+      }
     },
 
     //获取商品类型数据
     getTypeData() {
       this.axios({
         method: "GET",
-        url: "/getType"
+        url: "/getType",
+        params: {
+          //偏移数据量
+          offset: (this.currentPage - 1) * this.pageCount,
+
+          //查询数据量
+          limit: this.pageCount
+        }
       })
         .then(result => {
           console.log("result ==> ", result);
@@ -216,6 +262,8 @@ export default {
           });
 
           this.typeData = result.data.result;
+          this.isSearch = false;
+          this.typeTitle = "";
         })
         .catch(err => {
           console.log("err => ", err);
@@ -266,6 +314,7 @@ export default {
         (typeof this.typeTitle === "string" && this.typeTitle.trim() == "") ||
         this.typeTitle == null
       ) {
+        console.log("搜索关键字为空");
         return;
       }
 
@@ -279,9 +328,9 @@ export default {
         method: "GET",
         url: "/searchType",
         params: {
-          type: this.typeTitle,
-        //   offset: (this.currentPage - 1) * this.pageCount,
-        //   limit: this.pageCount
+          type: this.typeTitle
+          //   offset: (this.currentPage - 1) * this.pageCount,
+          //   limit: this.pageCount
         }
       })
         .then(result => {
@@ -304,16 +353,63 @@ export default {
         .catch(err => {
           console.log("err ==> ", err);
         });
+    },
+
+    //获取数据表的数据数量, 用于分页
+    getTypeDataRows() {
+      this.axios({
+        method: "GET",
+        url: "/typeRows"
+      })
+        .then(result => {
+          console.log("result.... ==> ", result);
+          //分页
+          this.totalPage = Math.ceil(result.data.result / this.pageCount);
+        })
+        .catch(err => {
+          console.log("err ==> ", err);
+        });
+    },
+
+    //点击上下页
+    togglePage(isNext) {
+      //下一页
+      if (isNext) {
+        if (this.currentPage < this.totalPage) {
+          this.currentPage++;
+          if (this.isSearch) {
+            this.searchType();
+          } else {
+            this.getTypeData();
+          }
+        }
+      } else {
+        //上一页
+        if (this.currentPage > 1) {
+          this.currentPage--;
+          if (this.isSearch) {
+            this.searchType();
+          } else {
+            this.getTypeData();
+          }
+        }
+      }
     }
   },
   created() {
     //获取商品类型数据
     this.getTypeData();
+
+    //获取数据表的数据数量
+    this.getTypeDataRows();
   }
 };
 </script>
 
 <style lang="less" scoped>
+.page-item {
+  user-select: none;
+}
 .type-ipt {
   width: calc(~"100% - 80px");
 }

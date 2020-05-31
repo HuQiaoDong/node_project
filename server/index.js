@@ -24,13 +24,15 @@ const whiteList = require(__basename + '/white_list/whiteList.js');
 console.log('白名单列表', whiteList);
 
 //导入路由
-//导入路由
 const router = require(__basename + '/router/router.js');
 console.log('路由', router);
 
 //创建express实例
 let app = express();
 // 允许跨域
+
+//设置静态目录
+app.use(express.static(__basename + '/upload'));
 
 // 设置解析post请求体
 //将请求体解析为json格式

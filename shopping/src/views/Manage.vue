@@ -2,11 +2,22 @@
   <div class="manage">
     <div class="header">
       <div class="title">
-        <h1>商家后台</h1>
+        <h2>商品管理系统</h2>
       </div>
 
       <div class="user">
-        <div class="user-img"></div>
+        <div class="user-img">
+          <img :src="staticUrl + '/' + userInfo.aviltor" alt />
+        </div>
+        <div class="nickname info">
+          <span>{{userInfo.nickname}}</span>
+        </div>
+        <div class="setting info">
+          <span>设置</span>
+        </div>
+        <div class="out info">
+          <span>退出</span>
+        </div>
       </div>
     </div>
     <div class="main">
@@ -25,6 +36,9 @@
             >
               <div class="card-body">
                 <div class="type-item">商品类型</div>
+              </div>
+              <div class="card-body">
+                <div class="type-item">商品列表</div>
               </div>
             </div>
           </div>
@@ -54,49 +68,94 @@
 export default {
   name: "Manage",
   data() {
-    return {};
+    return {
+      userInfo: {}
+    };
+  },
+  methods: {
+    //获取用户信息
+    getUserInfo() {
+      this.axios({
+        method: "GET",
+        url: "/userInfo"
+      })
+        .then(result => {
+          console.log("result ==> ", result);
+          if (result.data.code == 1060) {
+            this.userInfo = result.data.result[0];
+          }
+        })
+        .catch(err => {
+          console.log("err => ", err);
+        });
+    }
+  },
+  created() {
+    console.log("this.staticUrl ==> ", this.staticUrl);
+    this.getUserInfo();
   }
 };
 </script>
 
 <style lang="less" scoped>
-html,
-body {
-  width: 100%;
-  height: 100%;
-}
+// html,
+// body {
+//   width: 100%;
+//   height: 100%;
+// }
 .manage {
-  height: 100%;
+  height: 100vh;
   //头部
   .header {
     display: flex;
     justify-content: space-between;
-    height: 10%;
-    background: #dddddd;
+    height: 10vh;
+    padding: 0px 20px;
+    background: linear-gradient(to right, #00aeff, blue);
     .title {
       display: flex;
-      h1 {
+      h2 {
+        color: white;
         margin: auto;
+        margin-right: 20px;
         font-weight: normal;
       }
     }
     .user {
       display: flex;
       .user-img {
-        margin: auto;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: black;
+        display: flex;
+        margin: 0px 10px;
+        img {
+          margin: auto;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+        }
+      }
+      .info {
+        margin: 0px 10px;
+        display: flex;
+        span {
+          color: white;
+          font-weight: 500;
+          margin: auto;
+        }
+      }
+      .setting,.out {
+        span {
+          cursor: pointer;
+        }
       }
     }
   }
   .main {
-    height: 90%;
+    // height: 100%;
+    height: 90vh;
     display: flex;
     .nav {
-      flex: 1;
-      background: linear-gradient(skyblue, blue);
+      width: 190px;
+      background: linear-gradient(to bottom, #00aeff, blue);
       .accordion {
         width: 100%;
 
@@ -116,7 +175,10 @@ body {
       }
     }
     .content {
-      flex: 9;
+      background: linear-gradient(145deg, white, #aaaaaa);
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
     }
   }
 }

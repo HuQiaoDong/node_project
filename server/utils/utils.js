@@ -7,22 +7,25 @@ const nodemailer = require('nodemailer');
 //导入生成和解析token模块
 const jsonwebtoken = require('jsonwebtoken');
 
-let transporter = nodemailer.createTransport({
-    //主机
-    host: 'smtp.126.com', //邮箱域名
+//创建发邮件配置
+let transporter = nodemailer.createTransport(config.emailOptions);
+// let transporter = nodemailer.createTransport({
+//     //主机
+//     host: 'smtp.126.com', //邮箱域名
 
-    // 端口,25端口在阿里云服务禁用，推荐用465端口
-    port: 465,
+//     // 端口,25端口在阿里云服务禁用，推荐用465端口
+//     port: 465,
 
-    //当端口为465，需要设置为true
-    secure: true,
+//     //当端口为465，需要设置为true
+//     secure: true,
 
-    //身份验证
-    auth: {
-        user: 'huqiaodong@126.com',
-        pass: 'ZURZCQWXPWPKDEHU',
-    }
-})
+//     //身份验证
+//     auth: {
+//         user: 'huqiaodong@126.com',
+//         pass: 'ZURZCQWXPWPKDEHU',
+//     }
+// })
+
 
 class Utils {
 
@@ -47,7 +50,7 @@ class Utils {
         transporter.sendMail({
 
             //发邮件地址
-            from: 'huqiaodong@126.com',
+            from: config.emailOptions.auth.user,
 
             //收邮件地址
             to: emails,
