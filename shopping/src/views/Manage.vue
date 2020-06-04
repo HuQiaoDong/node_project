@@ -23,34 +23,33 @@
     <div class="main">
       <div class="nav">
         <div class="accordion" id="accordion">
-          <div class="card">
-            <div class="card-header" id="headingOne">
-              <div class="aside-item" data-toggle="collapse" data-target="#c1">类型管理</div>
+          <div class="card" v-for="(item, index) in asideMenu" :key="index">
+            <div class="card-header">
+              <div class="aside-item" data-toggle="collapse" :data-target="'#c' + index">
+                <div class="fl fa-box">
+                  <i class="fa" :class="[item.icon]"></i>
+                </div>
+                <div class="fl fa-title">
+                  <span class="fl">{{item.title}}</span>
+                  <i class="fa fa-angle-down fr down-arrow"></i>
+                </div>
+              </div>
             </div>
 
             <div
-              id="c1"
-              class="collapse show c-box"
-              aria-labelledby="headingOne"
+              :id="'c' + index"
+              class="collapse c-box"
+              :class="{show: index == 0}"
               data-parent="#accordion"
             >
               <div class="card-body">
-                <div class="type-item">商品类型</div>
-              </div>
-              <div class="card-body">
-                <div class="type-item">商品列表</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header" id="headingTwo">
-              <div class="aside-item" data-toggle="collapse" data-target="#c2">商品管理</div>
-            </div>
-
-            <div id="c2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-              <div class="card-body">
-                <div class="type-item">我的商品</div>
+                <div
+                  class="type-item"
+                  :class="{active: v.isActive}"
+                  v-for="(v, i) in item.subTitle"
+                  :key="i"
+                  @click="toggleAsideMenu(v)"
+                >{{v.name}}</div>
               </div>
             </div>
           </div>
@@ -69,7 +68,57 @@ export default {
   name: "Manage",
   data() {
     return {
-      userInfo: {}
+      // 用户信息
+      userInfo: {},
+
+      // 导航模型
+      asideMenu: [
+        {
+          title: "商品管理",
+          // icon: 'fa-cube',
+          subTitle: [
+            {
+              name: "商品类型",
+              isActive: true,
+
+              //路由名称
+              routerName: "Type"
+            },
+            {
+              name: "商品列表",
+              isActive: false,
+              routerName: "Goods"
+            }
+          ]
+        },
+        {
+          title: "订单管理",
+          // icon: 'fa-file-text-o',
+          subTitle: [
+            {
+              name: "订单列表",
+              isActive: false,
+              routerName: ""
+            }
+          ]
+        },
+        {
+          title: "数据统计",
+          // icon: 'fa-bar-chart',
+          subTitle: [
+            {
+              name: "商品统计",
+              isActive: false,
+              routerName: ""
+            },
+            {
+              name: "订单统计",
+              isActive: false,
+              routerName: ""
+            }
+          ]
+        }
+      ]
     };
   },
   methods: {
@@ -88,6 +137,26 @@ export default {
         .catch(err => {
           console.log("err => ", err);
         });
+    },
+    //切换侧边栏菜单
+    toggleAsideMenu(item) {
+      //如果当前选中，不做任何事情
+      if (item.isActive) {
+        console.log("已经选中");
+        return;
+      }
+      console.log("item ==> ", item);
+
+      //将其他选中修改为未选中状态
+      this.asideMenu.forEach(v1 => {
+        v1.subTitle.forEach(v2 => {
+          v2.isActive = false;
+        });
+      });
+
+      item.isActive = true;
+
+      this.$router.push({ name: item.routerName });
     }
   },
   created() {
@@ -142,7 +211,8 @@ export default {
           margin: auto;
         }
       }
-      .setting,.out {
+      .setting,
+      .out {
         span {
           cursor: pointer;
         }
@@ -154,7 +224,7 @@ export default {
     height: 90vh;
     display: flex;
     .nav {
-      width: 190px;
+      width: 220px;
       background: linear-gradient(to bottom, #00aeff, blue);
       .accordion {
         width: 100%;
@@ -164,7 +234,7 @@ export default {
           background: rgba(0, 0, 255, 0.2);
           .card-body {
             text-indent: 10px;
-            padding: 12px 20px;
+            padding: 0px 0px;
           }
         }
       }
@@ -175,10 +245,25 @@ export default {
       }
     }
     .content {
-      background: linear-gradient(145deg, white, #aaaaaa);
+      background: linear-gradient(145deg, white, #cccccc);
       flex: 1;
       height: 100%;
+      padding: 40px 30px 20px 30px;
       overflow-y: auto;
+    }
+    .type-item {
+      height: 40px;
+      line-height: 40px;
+      color: #fff;
+      padding-left: 20px;
+      cursor: pointer;
+      &:hover {
+        background-color: #0f62c1;
+      }
+      &.active{
+         background-color: #0F62c1;
+         opacity: 0.8;
+      }
     }
   }
 }

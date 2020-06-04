@@ -26,7 +26,7 @@ _axios.interceptors.request.use(
     // },
     function(config) {
         // Do something before request is sent
-        console.log(config);
+        // console.log(config);
         if (config.method == 'post') {
             console.log('post请求');
             // let str = JSON.stringify(config.data);
@@ -39,7 +39,7 @@ _axios.interceptors.request.use(
             }
 
             str = str.slice(0, -1);
-            console.log('str ==> ', str);
+            // console.log('str ==> ', str);
 
             config.data = str;
         }

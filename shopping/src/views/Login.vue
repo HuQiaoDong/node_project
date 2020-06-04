@@ -38,7 +38,7 @@
         </div>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
-            <router-link to="/shopping/src/views/Register.vue">没有账号？立即注册</router-link>
+            <router-link to="/register">没有账号？立即注册</router-link>
             <!-- @click.prevent="uploadForm(userInfo)" -->
           </div>
         </div>

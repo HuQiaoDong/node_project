@@ -36,11 +36,17 @@ app.use(express.static(__basename + '/upload'));
 
 // 设置解析post请求体
 //将请求体解析为json格式
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+
+    //限制请求体大小, 'xxxkb', 3mb
+    limit: config.requestBodyOptions.limit
+
+}));
 
 //extended:false可以接受任何数据类型,true:可以接受字符串或者数组
 app.use(bodyParser.urlencoded({
-    extended: false
+    extended: false,
+    limit: config.requestBodyOptions.limit
 }))
 
 app.all('*', function(req, res, next) {
@@ -91,7 +97,7 @@ router(app);
 
 //监听端口
 app.listen(9000, () => {
-    console.log('the server running http://127.0.0.1:9000');
+    console.log(`the server running ${config.serverOptions.host}:${config.serverOptions.port}`);
 })
 
 //测试数据库连接状态

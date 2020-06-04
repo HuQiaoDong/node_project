@@ -429,9 +429,9 @@ export default {
 .type-title {
   line-height: 38px;
 }
-.type {
-  padding: 20px;
-}
+// .type {
+//   padding: 40px 30px 20px 30px;
+// }
 .search {
   width: 300px;
   margin: 0 20px;

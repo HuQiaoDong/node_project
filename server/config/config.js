@@ -71,3 +71,7 @@ exports.tokenOptions = {
     //token加盐
     tokenSalt: '_tk'
 }
+//请求体配置
+exports.requestBodyOptions = {
+    limit: '3072kb'
+}

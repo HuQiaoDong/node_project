@@ -8,7 +8,7 @@ const routes = [{
         name: "Register",
         // component: r => request(['../views/Register.vue'], r)
         component: () =>
-            import ("../views/Register.vue")
+            import("../views/Register.vue")
     },
     {
         path: '/login',
@@ -27,6 +27,14 @@ const routes = [{
             path: 'type',
             name: 'Type',
             component: r => require(['../views/Type.vue'], r)
+        }, {
+            path: 'goods',
+            name: 'Goods',
+            component: r => require(['../views/Goods.vue'], r)
+        }, {
+            path: 'goodsdesc/:id',
+            name: 'GoodsDesc',
+            component: r => require(['../views/GoodsDesc.vue'], r)
         }]
     },
     {

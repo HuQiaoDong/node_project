@@ -79,15 +79,30 @@
             >注册</button>
           </div>
         </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <router-link to="/login">已有账号？立即登录</router-link>
+          </div>
+        </div>
       </form>
     </div>
+    <Toast></Toast>
   </div>
 </template>
 
 <script>
+//导入消息提示组件
+import Toast from "../components/Toast.vue";
+
+//导入表单验证文件
 import { vaildForm } from "../js/vaildForm.js";
+
 export default {
   name: "Register",
+
+  components: {
+    Toast
+  },
   data() {
     return {
       vaildForm: vaildForm,
@@ -98,47 +113,46 @@ export default {
         verifyCode: ""
       },
 
-      text:'发送邮箱验证码',
-      isSended:false,
+      text: "发送邮箱验证码",
+      isSended: false,
       verifyRes: []
     };
   },
   methods: {
-
     //获取邮箱验证码
-    getEmailCode(){
+    getEmailCode() {
       // let data = {email: this.userInfo.email}
       // let res = vaildForm.valid(data);
       // if(res.pass == false){
       //   return;
       // }
 
-      let that = this
+      let that = this;
       let time = 5;
-        this.text = `${time}s后重新发送`;
-        this.isSend = true;
-        let timer = setInterval(() => {
-          if (time == 0) {
-            clearInterval(timer);
-            timer = null;
-            this.text = `发送邮箱验证码`;
-            this.isSended = false;
-          } else {
-            time--;
-            this.text = `${time}s后重新发送`;
-          }
-        }, 1000)
+      this.text = `${time}s后重新发送`;
+      this.isSend = true;
+      let timer = setInterval(() => {
+        if (time == 0) {
+          clearInterval(timer);
+          timer = null;
+          this.text = `发送邮箱验证码`;
+          this.isSended = false;
+        } else {
+          time--;
+          this.text = `${time}s后重新发送`;
+        }
+      }, 1000);
 
       //发送邮箱验证码
       this.axios
         .post("/sendMail", {
-            email:that.userInfo.email
+          email: that.userInfo.email
         })
         .then(function(response) {
-          console.log('response',response);
+          console.log("response", response);
         })
         .catch(function(error) {
-          console.log('error',error);
+          console.log("error", error);
         });
     },
 
@@ -172,17 +186,24 @@ export default {
         .then(function(response) {
           console.log(response.data);
           let registerRes = response.data;
-          if(registerRes.code == 1002){
+          if (registerRes.code == 1002) {
+            this.$showToast({
+              message: result.data.msg
+            });
             // this.msg = '该邮箱已被注册'
             // this.verifyRes[0] = false;
-          }
-          else if(registerRes.code == 1000){
-            // this.msg = '注册成功'
-            setTimeout(()=>{
-              that.$router.push('/login');
-            },3000)
-          }
-          else if(registerRes.code == 1001){
+          } else if (registerRes.code == 1000) {
+            // this.msg = '注册成功';
+            this.$showToast({
+              message: result.data.msg
+            });
+            setTimeout(() => {
+              that.$router.push("/login");
+            }, 3000);
+          } else if (registerRes.code == 1001) {
+            this.$showToast({
+              message: result.data.msg
+            });
           }
         })
         .catch(function(error) {

@@ -18,4 +18,28 @@ html {
   height: 100vh;
   min-width: 1170px;
 }
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.clearfix::after {
+  display: block;
+  content: "";
+  clear: both;
+}
+
+.auto-img {
+  width: 100%;
+  display: block;
+}
 </style>
