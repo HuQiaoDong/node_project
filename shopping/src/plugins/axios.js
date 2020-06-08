@@ -12,7 +12,8 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 
 let config = {
     // 基础请求
-    baseURL: 'http://127.0.0.1:9000',
+    baseURL: 'http://112.74.45.214:9000',
+    // baseURL: 'http://112.74.45.214:80',
     // timeout: 60 * 1000, // Timeout
     withCredentials: true, // Check cross-site Access-Control
 };
@@ -26,7 +27,7 @@ _axios.interceptors.request.use(
     // },
     function(config) {
         // Do something before request is sent
-        // console.log(config);
+        console.log(config);
         if (config.method == 'post') {
             console.log('post请求');
             // let str = JSON.stringify(config.data);

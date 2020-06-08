@@ -85,14 +85,14 @@ class RouterController {
 
             // console.log('req.headers.cookie ==> ', req.headers.cookie);
             // req.headers.cookie
-            // let cookies = utils.transformCookie(myToken);
+            let cookies = utils.transformCookie(req.headers.cookie);
             // console.log('cookies', cookies);
 
-            // console.log('cookies._abc ==> ', cookies._abc);
-            let cookies = myToken;
+            console.log('cookies._abc ==> ', cookies._abc);
+            // let cookies = myToken;
             //解析token
             utils.verifyString({
-                value: cookies,
+                value: cookies._abc,
                 salt: config.tokenOptions.tokenSalt,
                 fn: (err, decoded) => {
                     console.log('err ==> ', err);

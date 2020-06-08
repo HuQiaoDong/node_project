@@ -1,0 +1,353 @@
+1=====================>
+vmware ubuntu 配置
+登录用户: keewer
+登录密码: action2008
+
+阿里云
+root
+旧的QQ密码
+
+2=====================>
+ubuntu 安装软件配置
+sudo apt-get update (更新ubuntu apt-get 源)
+
+预加载包, 防止出现unable to locate package 包名
+sudo add-apt-repository universe
+
+sudo apt-get install openssh-client (安装客户端的ssh)
+sudo apt-get install openssh-server (安装服务器的ssh)
+ps -e | grep ssh (查看ssh是否启动)
+sudo /etc/init.d/ssh start (启动ssh)
+sudo /etc/init.d/ssh stop (停止ssh)
+cd /etc/ssh/sshd_config (设置ssh端口)
+sudo apt-get install nodejs-legcacy (安装nodejs)
+sudo apt-get install npm (安装npm)
+sudo npm install -g n (全局安装n)
+n ls (查看node版本)
+sudo n stable (安装稳定版本的node)
+sudo n latest (安装最新版本的node)
+sudo n 7.10.0 (安装指定版本的node)
+sudo npm install npm -g (更新npm)
+sudo npm cache clean -f (清除npm的缓存)
+sudo apt-get install git (安装git)
+git --version (查看git版本)
+git config --global user.name "keewer" (配置git用户名)
+git config --global user.email "kangliuyong@126.com" (配置git用户邮箱)
+ssh-keygen -t rsa -C "kangliuyong@126.com" (配置ssh key)
+sudo apt-get install mysql-server (安装服务器mysql)
+sudo apt-get install mysql-client (安装客户端mysql)
+sudo apt-get install libmysqlclient-dev ( 安装mysql的C语言开发接口)
+sudo netstat -tap | grep mysql (查看mysql是否安装成功)
+sudo service mysql stop (停止mysql)
+sudo service mysql start   (启动mysql)
+sudo service mysql restart (重启mysql)
+sudo /etc/init.d/mysql stop (停止mysql)
+sudo /etc/init.d/mysql start (启动mysql)
+sudo /etc/init.d/mysql restart (重启mysql)
+sudo apt-get install vim (安装vim编辑器)
+ps -e (查看进程)
+ps -aux (查看进程)
+kill pid (杀死指定进程号的进程)
+killall -9 pname (强制杀死指定名称的进程)
+netstat -ntlp | grep 6379 (查看6379端口是否被占用)
+redis-server /etc/redis/redis.conf (启动redis)
+进入redis-server的src, redis-server (启动redis)
+redis-server & (以后台方式启动redis)
+kill -9 9015 (通过9015进程号杀死9015进程, -9: 强制)
+ps -ef | grep redis (查看redis服务是否启动)
+sudo npm install -g pm2 (全局安装pm2)
+sudo npm config set strict-ssl false (关闭npm严格认证)
+sudo npm install -g cnpm --regsitry=https://registry.npm.taobao.org
+cnmp install -g node-inspector
+sudo dpkg-reconfigure tzdata (修改ubuntu系统时间)
+
+
+有时候安装过程中突然断网会造成以下报错
+E: Could not get lock /var/lib/dpkg/lock - open (11: Resource temporarily unavailable)
+E: Unable to lock the administration directory (/var/lib/dpkg/), is another process using it
+解决方法如下
+sudo rm /var/cache/apt/archives/lock
+sudo rm /var/lib/dpkg/lock
+
+
+使用n命令更新node报错
+cp: cannot stat `/usr/local/n/versions/node/5.4.0/lib': No such file or directory
+cp: cannot stat `/usr/local/n/versions/node/5.4.0/include': No such file or directory
+cp: cannot stat `/usr/local/n/versions/node/5.4.0/share': No such file or directory
+不仅如此使用node和npm服务时还会出现 Segmentation Fault
+解决方法如下
+sudo n - 5.4.0  (删除5.4.0版本的node)
+sudo n rm 5.4.0 (删除5.4.0版本的node)
+
+
+修改git的https为ssh
+进入项目目录
+cd ./.git
+sudo vim config
+git@github.com:[your_id]/[repo_name].git
+
+
+开放mysql远程端口
+mysql -u root -p
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'love you' WITH GRANT OPTION;
+FLUSH PRIVILEGES; 
+vim /etc/mysql/mysql.conf.d/mysqld.cnf
+注释 #bind-address            = 127.0.0.1
+
+
+安装node调试
+cnpm install -g node-inspector
+启动node-inspector之前要执行以下命令
+systemctl stop firewalld (关闭系统防火墙)
+nodemon --debug app.js (添加--debug参数)
+node-inspector (执行node-inspector)
+在浏览器地址栏输入
+geek:8080/debug?ws=geek:8080&port=5858
+
+
+3=====================> ubuntu16.04
+解决安装mysql数据库修改密码无法登录问题
+sudo apt-get install mysql-server
+apt-get isntall mysql-client
+sudo apt-get install libmysqlclient-dev
+sudo netstat -tap | grep mysql
+mysql -u root -p 
+
+Ubuntu无法登录mysql的解决方法
+cd /etc/mysql
+cat debian.cnf
+
+按用户 user “debian-sys-maint”登陆
+mysql -u debian-sys-maint -p
+输入密码 即为debian.cnf的password='XXXXX'
+
+mysql>SET PASSWORD FOR 'root'@'localhost' =PASSWORD('newpassword');
+flush privileges;
+quit;
+
+重新登录即可, 可能需要添加sudo
+mysql -u root -p
+
+4=====================>
+  重启命令 ： 
+    1、reboot 
+    2、shutdown -r now 立刻重启
+    3、shutdown -r 10 过10分钟自动重启
+    4、shutdown -r 20:35 在时间为20:35时候重启
+
+    如果是通过shutdown命令设置重启的话，可以用shutdown -c命令取消重启 
+
+    关机命令 ： 
+    1、halt   立刻关机（一般加-p 关闭电源）
+    2、poweroff 立刻关机 
+    3、shutdown -h now 立刻关机
+    4、shutdown -h 10 10分钟后自动关机 
+
+    如果是通过shutdown命令设置关机的话，可以用shutdown -c命令取消关机
+
+
+5=====================>
+Ubuntu 18.04 修改中国时区
+sudo tzselect
+让时区修改生效
+sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+
+6=====================>
+安装redis-server
+sudo apt-get install redis-server
+
+如果需要安装成服务的话执行
+sudo systemctl enable redis-server.service
+
+redis-server -v
+redis-server       # 启动服务
+redis-cli          # 启动客户端
+redis-cli shutdown # 关闭服务
+
+/etc/init.d/redis-server stop     # 停止
+/etc/init.d/redis-server start    # 启动
+/etc/init.d/redis-server restart  # 重启
+
+查看redis-server
+ps aux | grep "redis"
+
+打开远程连接并关闭保护模式，否则只允许本地连接
+sudo vim /etc/redis/redis.conf
+# 把以下注释掉（前面加#）
+bind 127.0.0.1 ::1
+# 以下改为 yes → no
+protected-mode no
+# 如果需要，设置验证密码
+requirepass YOURPASSPHRASE
+
+杀掉进程来强制关闭服务
+sudo pkill pid
+
+7=====================>
+安装mogondb
+sudo apt-get install mongodb
+
+查看进程是否已经启动
+pgrep mongo -l
+
+先进入mongod所在的目录（/usr/bin/mongod），然后运行./mongod --dbpath /var/lib/mongodb/ --logpath /var/log/mongodb/mongodb.log --logappend &
+
+--dbpath：指定mongo的数据库文件在哪个文件夹
+--logpath：指定mongo的log日志是哪个，这里log一定要指定到具体的文件名
+--logappend：表示log的写入是采用附加的方式，默认的是覆盖之前的文件
+&：表示程序在后台运行
+
+关闭／启动
+　　sudo service mongodb stop 　　sudo service mongodb start
+
+设置数据库连接密码：
+       　　在跟目录创建文件夹： data/db
+
+　　关闭现有服务。
+
+　　　　sudo service mongodb stop
+
+　　重新启动服务
+
+　　　　$ mongod –auth
+
+　　创建连接用户
+
+　　　　$ mongo
+
+　　　　>use admin
+
+　　　　switched to db admin
+
+　　　　>db.addUser("root","1983")
+
+　　关闭服务（直接在 mongod 启动的命令窗口 “ctrl + C”）
+
+        　　重启服务：
+
+         　　　　$:  mongod –auth
+
+　　查看是否开始验证：、
+
+　　　　$ mongo
+
+　　　　MongoDB shell version: 2.0.4
+
+　　　　connecting to: test
+
+　　　　>use admin
+
+　　　　switched to db admin
+
+　　　　>show collections
+
+　　　　Fri Mar 14 09:07:08 uncaught exception: error: {
+
+　　　　"$err" : "unauthorized db:admin lock type:-1 client:127.0.0.1",
+
+　　　　"code" : 10057
+
+　　　　}
+
+　　有提示 链接错误。
+
+         　　进行用户验证：
+
+　　　　>db.auth("root","1983")
+
+　　　　1
+
+　　重新查看就可以查看数据集
+
+　　　　>show collections
+
+　　　　system.indexes
+
+　　　　system.users
+
+ 
+
+设置客户端连接：
+       　　默认安装的话只允许 127.0.0.1 的IP 连接.
+
+　　需要修改/etc/mongodb.conf 注释下列记录：
+
+       　　打开文件：          
+
+             　　　　$ sudo gedit /etc/mongodb.conf
+
+　　注释记录：            
+
+              　　　　#bind_ip = 0.0.0.0 
+
+mongodb 远程访问配置(ubuntu)
+
+1、首先修改mongodb的配置文件 让其监听所有外网ip,如果不行,连接的时候肯定会有异常
+编辑文件：vi /etc/mongodb.conf
+修改后的内容如下：
+    bind_ip = 0.0.0.0  或者 #bind_ip 127.0.0.1
+    port = 27017
+    auth=true (添加帐号,密码认证)
+2、/etc/init.d/mongodb restart
+3、连接 
+#本地连接
+/usr/local/mongodb/bin/mongo
+#远程连接
+/usr/local/mongodb/bin/mongo127.0.0.1/admin-u username -p password
+4、给某个数据库添加用户访问权限
+  db.addUser('user','pwd')
+  db.auth('user','pwd')
+5、删除用户
+  db.removeUser('username')
+
+ubuntu18.04安装mysql8.0
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
+sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
+sudo apt-get update
+执行更新源命令出现Run 'apt list --upgradable' to see them.需要执行sudo apt-get upgrade
+
+sudo apt-get install mysql-server
+
+查看3306是否被监听
+netstat -an | grep 3306
+
+===========================================
+mysql8.0开放远程连接
+#创建账户
+create user 'root'@'%' identified by 'q152w192';
+
+#赋予权限，with grant option这个选项表示该用户可以将自己拥有的权限授权给别人
+grant all privileges on *.* to 'root'@'%' with grant option;
+
+#改密码&授权超用户，flush privileges 命令本质上的作用是将当前user和privilige表中的用户信息/权限设置从mysql库(MySQL数据库的内置库)中提取到内存里
+
+修改加密规则
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'yourpassword' PASSWORD EXPIRE NEVER;
+
+更新 root 用户密码
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'yourpassword';
+
+刷新权限
+FLUSH PRIVILEGES;
+===========================================
+
+sudo netstat -tap | grep mysql
+
+远程登录测试
+mysql -h 47.106.197.108 -P 3306 -u root -p
+
+防火墙开启3306端口
+sudo ufw allow 3306
+# 可能阿里云禁了3306这个端口，所以开启一下吧
+
+===================================
+卸载mysql
+首先删除mysql:
+sudo apt-get remove mysql-*
+
+然后清理残留的数据
+dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P
+
+它会跳出一个对话框，你选择yes就好了
+===================================

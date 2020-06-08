@@ -328,9 +328,9 @@ export default {
         method: "GET",
         url: "/searchType",
         params: {
-          type: this.typeTitle
-          //   offset: (this.currentPage - 1) * this.pageCount,
-          //   limit: this.pageCount
+          type: this.typeTitle,
+          offset: (this.currentPage - 1) * this.pageCount,
+          limit: this.pageCount
         }
       })
         .then(result => {

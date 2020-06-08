@@ -55,8 +55,10 @@ exports.emailOptions = {
 
 //服务器配置
 exports.serverOptions = {
-    host: 'http://127.0.0.1',
-    port: 9000
+    // host: 'http://127.0.0.1',
+    // port: 9000
+    host:'http://112.74.45.214',
+    port:9000
 }
 
 //加盐配置

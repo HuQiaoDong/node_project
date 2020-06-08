@@ -143,7 +143,7 @@ export default {
       currentPage: 1,
 
       //每页显示10条数据
-      pageCount: 2,
+      pageCount: 10,
 
       //总页数
       totalPage: 0,
